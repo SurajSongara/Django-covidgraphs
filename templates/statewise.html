@@ -1,0 +1,235 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>GoCorona</title>
+	<link rel="icon" href="{% static 'icons/covid_icon.ico' %}" width='50' height='50' type="image/x-icon">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+		integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+		crossorigin="anonymous"></script>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+		integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+		integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+		crossorigin="anonymous"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	<link rel="stylesheet" href="{% static 'css/nav.css' %}">
+	<script src="{% static 'js/nav.js' %}"></script>
+	<script src="{% static 'js/chart.js' %}"></script>
+	<link rel="stylesheet" href="{% static 'css/search.css' %}">
+
+
+
+
+
+</head>
+
+<body onload="get_state('{{csrf_token}}');">
+	<header class="header-area overlay">
+		<nav class="navbar navbar-expand-md navbar-dark">
+			<div class="container">
+				<a href="{% url 'home' %}" class="navbar-brand">GoCorona</a>
+
+				<button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#main-nav">
+					<span class="menu-icon-bar"></span>
+					<span class="menu-icon-bar"></span>
+					<span class="menu-icon-bar"></span>
+				</button>
+
+				<div id="main-nav" class="collapse navbar-collapse">
+					<ul class="navbar-nav ml-auto">
+						<li><a href="{% url 'home' %}" class="nav-item nav-link">Home</a></li>
+						<li><a href="{% url 'statewise' %}" class="nav-item nav-link">Statewise Data</a></li>
+						<li><a href="{% url 'contact' %}" class="nav-item nav-link">Contact</a></li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+
+		<div class="banner">
+			<div class="container">
+				<h1>Statewise Covid Data</h1>
+				<div class="row">
+					<div class="col">
+						<a href="#inputGroupSelect04" class="button button-primary">See Graph</a>
+					</div>
+					<div class="col">
+						<a href="#data_table" class="button button-primary">See Data</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</header>
+	<main>
+		<section id="content" class="content">
+			<div class="container">
+				<div class="input-group lg">
+					<select class="custom-select scrollable-menu" style="height:50px; width:min-content;"
+						id="inputGroupSelect04">
+						<option selected>Choose State</option>
+						<option value="West Bengal">West Bengal</option>
+						<option value="Uttar Pradesh">Uttar Pradesh</option>
+						<option value="Telangana">Telangana</option>
+						<option value="Sikkim">Sikkim</option>
+						<option value="Punjab">Punjab</option>
+						<option value="Odisha">Odisha</option>
+						<option value="Madhya Pradesh">Madhya Pradesh</option>
+						<option value="Meghalaya">Meghalaya</option>
+						<option value="Maharashtra">Maharashtra</option>
+						<option value="Ladakh">Ladakh</option>
+						<option value="Karnataka">Karnataka</option>
+						<option value="Jammu and Kashmir">Jammu and Kashmir</option>
+						<option value="Haryana">Haryana</option>
+						<option value="Goa">Goa</option>
+						<option value="Dadra and Nagar Haveli and Daman and Diu">Daman and Diu</option>
+						<option value="Andhra Pradesh">Andhra Pradesh</option>
+						<option value="Andaman and Nicobar Islands">Andaman and Nicobar</option>
+						<option value="Arunachal Pradesh">Arunachal Pradesh</option>
+						<option value="Bihar">Bihar</option>
+						<option value="Chhattisgarh">Chhattisgarh</option>
+						<option value="Delhi">Delhi</option>
+						<option value="Gujarat">Gujarat</option>
+						<option value="Himachal Pradesh">Himachal Pradesh</option>
+						<option value="Jharkhand">Jharkhand</option>
+						<option value="Kerala">Kerala</option>
+						<option value="Lakshadweep">Lakshadweep</option>
+						<option value="Manipur">Manipur</option>
+						<option value="Mizoram">Mizoram</option>
+						<option value="Nagaland">Nagaland</option>
+						<option value="Puducherry">Puducherry</option>
+						<option value="Rajasthan">Rajasthan</option>
+						<option value="Tamil Nadu">Tamil Nadu</option>
+						<option value="Tripura">Tripura</option>
+						<option value="Uttarakhand">Uttarakhand</option>
+						<option value="Assam">Assam</option>
+						<option value="Chandigarh">Chandigarh</option>
+					</select>
+					<div class="input-group-append">
+						<button class="btn btn-outline-primary" type="button"
+							onclick="get_state('{{ csrf_token }}');">Select
+							State</button>
+					</div>
+				</div>
+			</div>
+			<br><br>
+
+
+
+			<h1 id="statename" style="text-align: center;"></h1>
+			<div class="mygraph">
+				<canvas id="pie-chart" width="400" height="400"></canvas>
+			</div>
+			<br>
+			<div class="container" style="text-align: center;">
+				<h2 id="rrate" style="color:#9BF20C">Recovery rate : 95.45%</h2>
+				<h2 id="drate" style="color:#781A06"> Death rate : 2.34%</h2>
+			</div>
+
+			<br><br>
+			<br><br><br><br>
+			<div class="container justify-center">
+				<h1 id="data_table" style="text-align: center;">Statewise Tabular Data<h1>
+
+						<br>
+
+						<table class="table table-hover" style="font-size:1.5vw;">
+							<thead style="color:darkgrey; background-color:dimgray">
+								<tr>
+									<th scope="col" style="color:rgb(83, 157, 137); background-color:dimgray">
+										State</th>
+									<th scope="col" style="color:rgb(56, 221, 205); background-color:dimgray">
+										Active
+									</th>
+									<th scope="col" style="color:rgb(221, 190, 13); background-color:dimgray">
+										Total
+										Confirmed</th>
+									<th scope="col" style="color:rgb(153, 211, 19); background-color:dimgray">
+										Total
+										Recovered</th>
+									<th scope="col" style="color:rgb(146, 5, 5); background-color:dimgray">Total
+										Deaths
+									</th>
+									<th scope="col" style="color:rgb(221, 190, 13); background-color:dimgray">
+										Today
+										Confirmed</th>
+									<th scope="col" style="color:rgb(153, 211, 19);background-color:dimgray">
+										Today
+										Recovered</th>
+									<th scope="col" style="color:rgb(146, 5, 5); background-color:dimgray">Today
+										Deaths
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for state in states %}
+								<tr>
+									<td>{{state.name}}</td>
+									<td style="color:rgb(56, 221, 205);">{{state.active}}</td>
+									<td style="color:rgb(221, 190, 13);">{{state.confirmed}}</td>
+									<td style="color:rgb(153, 211, 19);">{{state.recovered}}</td>
+									<td style="color:rgb(146, 5, 5);">{{state.deaths}}</td>
+									<td style="color:rgb(221, 190, 13);">{{state.todayrconfirmed}}</td>
+									<td style="color:rgb(153, 211, 19);">{{state.todayrecovered}}</td>
+									<td style="color:rgb(146, 5, 5);">{{state.todaydeath}}</td>
+								</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+			</div>
+		</section>
+	</main>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
+		crossorigin="anonymous"></script>
+
+	<footer class="text-center text-lg-start bg-light text-muted">
+		<section class="d-flex justify-content-center justify-content-lg-between p-4 border-bottom">
+			<div class="me-5 d-none d-lg-block">
+				<h5>Get connected with us on social networks:</h5>
+			</div>
+			<div>
+				<a href="mailto:suraj.songara@cdgi.edu.in" class="me-4 text-reset">
+					<i class="fa fa-google fa-2x"></i>
+				</a>
+				&nbsp;&nbsp;
+				<a href="https://www.linkedin.com/in/surajsongara/" class="me-4 text-reset">
+					<i class="fa fa-linkedin fa-2x"></i>
+				</a>
+				&nbsp;&nbsp;
+				<a href="https://github.com/SurajSongara" class="me-4 text-reset">
+					<i class="fa fa-github fa-2x"></i>
+				</a>
+			</div>
+		</section>
+		<div class="container text-center text-md-start mt-5">
+			<div class="row mt-3">
+				<div class="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4">
+					<h6 class="text-uppercase fw-bold mb-4">
+						<a href="{% url 'home' %}">Home</a>
+					</h6>
+				</div>
+				<div class="col-md-2 col-lg-2 col-xl-2 mx-auto mb-4">
+					<h6 class="text-uppercase fw-bold mb-4">
+						<a href="{% url 'statewise' %}">Statewise Data</a>
+					</h6>
+				</div>
+				<div class="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
+					<h6 class="text-uppercase fw-bold mb-4">
+						<a href="{% url 'contact' %}">Contact Us</a>
+					</h6>
+				</div>
+			</div>
+			</section>
+	</footer>
+
+
+</body>
+
+</html>
