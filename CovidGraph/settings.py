@@ -124,7 +124,7 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 
-STATIC_ROOT = BASE_DIR/ 'static'
+STATICFILES_DIRS=[BASE_DIR/'static']
 
 
 
